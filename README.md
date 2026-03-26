@@ -60,7 +60,7 @@ The final result is a system that can take any card—even a brand-new one—and
 Beyond training, the project includes an inference engine that allows users to query the model for specific card relationships or generate full deck-building recommendations.
 
 ### Synergy Scoring
-The system can compare any two cards—typically a Commander and a potential deck addition—to produce a **Synergy Score**. This score is calculated using cosine similarity on the "refined" vectors.
+The system can compare any two cards—typically a Commander and a potential deck addition—to produce a **Synergy Score**. This score is calculated using cosine similarity on the refined vectors.
 * **High Scores:** Indicate strong mechanical alignment (e.g., a token-generating card paired with a Commander that rewards token creation).
 * **Low Scores:** Indicate anti-synergy or a total lack of mechanical overlap, even if the cards share the same colours.
 
