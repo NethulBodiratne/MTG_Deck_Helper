@@ -29,15 +29,11 @@ print(f"🚀 Using device: {device}")
 # Define the keywords and types we want to track mechanically
 KEYWORDS_LIST = [
     # Evergreen & Core Actions
-    'flying', 'trample', 'ward', 'haste', 'deathtouch', 'lifelink', 'vigilance', 'menace', 'reach',
-    'double strike', 'first strike', 'indestructible', 'hexproof', 'flash', 'defender', 'prowess',
-    'scry', 'surveil', 'exile', 'mill', 'discard', 'counter', 'sacrifice', 'token', 'tap', 'untap',
+    'flying', 'trample', 'ward', 'haste', 'deathtouch', 'lifelink', 'vigilance', 'menace', 'reach', 'double strike', 'first strike', 'indestructible', 'hexproof', 'flash', 'defender', 'prowess', 'scry', 'surveil', 'exile', 'mill', 'discard', 'counter', 'sacrifice', 'token', 'tap', 'untap',
     # High-Synergy Actions & Ability Words
-    'proliferate', 'investigate', 'landfall', 'convoke', 'delve', 'cycling', 'flashback', 'kicker',
-    'cascade', 'discover', 'amass', 'poisonous', 'infect', 'toxic', 'corrupted', 'dredge', 'storm',
+    'proliferate', 'investigate', 'landfall', 'convoke', 'delve', 'cycling', 'flashback', 'kicker', 'cascade', 'discover', 'amass', 'poisonous', 'infect', 'toxic', 'corrupted', 'dredge', 'storm',
     # Modern & Future Era (Bloomburrow through Edge of Eternities 2026)
-    'offspring', 'gift', 'forage', 'expend', 'manifest dread', 'survival', 'impending', 'warp',
-    'vivid', 'plot', 'saddle', 'disguise', 'cloak', 'collect evidence', 'suspect', 'lander'
+    'offspring', 'gift', 'forage', 'expend', 'manifest dread', 'survival', 'impending', 'warp', 'vivid', 'plot', 'saddle', 'disguise', 'cloak', 'collect evidence', 'suspect', 'lander'
 ]
 TYPES_LIST = ['creature', 'enchantment', 'artifact', 'sorcery', 'instant', 'planeswalker', 'land', 'battle',
               'kindred', 'legendary', 'basic', 'snow', 'world', 'saga', 'vehicle', 'equipment', 'aura', 'room', 'case']
@@ -109,7 +105,7 @@ class MultiSimilarityLoss(nn.Module):
     Implements Multi-Similarity Loss for deep metric learning.
     Captures pair-wise similarities and weights them based on relative hardness.
     """
-    def __init__(self, alpha=20.0, beta=90.0, margin=1.0):
+    def __init__(self, alpha=15.0, beta=10.0, margin=1.0):
         super(MultiSimilarityLoss, self).__init__()
         self.alpha = alpha
         self.beta = beta
@@ -129,7 +125,8 @@ class MultiSimilarityLoss(nn.Module):
 
 # Model Initialization
 print("Initializing SentenceTransformer...")
-st_model = SentenceTransformer('all-MiniLM-L6-v2', device=device)
+st_model = SentenceTransformer('all-MiniLM-L6-v2', device=device) # all-mpnet-base-v2: Moves from 384 to 768 dimensions. Much better at capturing the semantic relationship between complex game actions.
+# BGE-Small-en-v1.5: Often outperforms MiniLM in retrieval tasks while remaining very fast.
 if device == 'cuda':
     # st_model.half()
     print("⚡ GPU detected: FP32 Precision Maintained for Stability")
@@ -403,7 +400,7 @@ def train_on_synergy(commander_name, cards_data, negative_ratio, optimizer, era_
 
     commander_key = commander_name.lower()
     if commander_key not in precomputed_embeddings:
-        print(f"  [Skip] {commander_name} not found in precomputed embeddings.")
+        print(f"  ❌ [Skip] {commander_name} not found in precomputed embeddings.")
         return 0.0
 
     anchor_emb = precomputed_embeddings[commander_key]
@@ -421,7 +418,7 @@ def train_on_synergy(commander_name, cards_data, negative_ratio, optimizer, era_
                 negatives.append(neg_emb)
 
     if not anchors:
-        print(f"  [Skip] No valid synergy pairs for {commander_name}")
+        print(f"  ❌[Skip] No valid synergy pairs for {commander_name}")
         return 0.0
 
     anchors_t, positives_t, negatives_t = torch.stack(anchors).to(device), torch.stack(positives).to(device), torch.stack(negatives).to(device)
