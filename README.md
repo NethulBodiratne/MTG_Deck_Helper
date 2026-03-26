@@ -52,3 +52,27 @@ Upon completion, the model exports two types of files:
 * **JSON Weights (.json):** A standardized format that allows the mathematical "brain" of the model to be used in web browsers or mobile applications without requiring a powerful server.
 
 The final result is a system that can take any card—even a brand-new one—and immediately identify which existing cards it supports best based on its mathematical "location" in the synergy map.
+
+---
+
+## Inference and Recommendation System
+
+Beyond training, the project includes an inference engine that allows users to query the model for specific card relationships or generate full deck-building recommendations.
+
+### Synergy Scoring
+The system can compare any two cards—typically a Commander and a potential deck addition—to produce a **Synergy Score**. This score is calculated using cosine similarity on the "refined" vectors.
+* **High Scores:** Indicate strong mechanical alignment (e.g., a token-generating card paired with a Commander that rewards token creation).
+* **Low Scores:** Indicate anti-synergy or a total lack of mechanical overlap, even if the cards share the same colours.
+
+### Automated Recommendations
+The recommendation engine can scan the entire database to find the best matches for a specific Commander. To provide practical utility for deck building, the system automatically categorizes these results into two groups:
+1.  **Non-Land Recommendations:** Creatures, spells, and artifacts that drive the deck's primary strategy.
+2.  **Land Recommendations:** Optimized mana-base suggestions that align with the Commander’s colour identity and utility needs.
+
+### Validation and Testing
+The project includes a testing suite with "Test Scenarios" to ensure the model's accuracy. These scenarios verify that the AI correctly identifies:
+* **High Synergy:** Cards that are community-proven staples for a specific strategy.
+* **Anti-Synergy:** Cards that might share a colour but actually disable the Commander's abilities (e.g., a card that stops lifegain paired with a lifegain Commander).
+* **Invalid/Low Impact:** Cards that are technically legal to play but offer no strategic benefit.
+
+---
